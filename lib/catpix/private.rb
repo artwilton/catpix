@@ -7,7 +7,7 @@ require "terminfo"
 
 module Catpix
   private
-  MAX_OPACITY = 65535
+  MAX_OPACITY = 255
 
   def self.default_options
     {
@@ -177,7 +177,7 @@ module Catpix
       0.upto(img.columns - 1) do |col|
         pixel = img.pixel_color col, row
 
-        buffer += if pixel.opacity == MAX_OPACITY
+        buffer += if pixel.alpha == MAX_OPACITY
           prep_lr_pixel options[:bg]
         else
           prep_lr_pixel get_normal_rgb pixel
@@ -199,14 +199,14 @@ module Catpix
       buffer = prep_horiz_margin margins[:left], margins[:colour]
       0.upto(img.columns - 1) do |col|
         top_pixel = img.pixel_color col, row
-        colour_top = if top_pixel.opacity < MAX_OPACITY
+        colour_top = if top_pixel.alpha > MAX_OPACITY
           get_normal_rgb top_pixel
         else
           options[:bg]
         end
 
         bottom_pixel = img.pixel_color col, row + 1
-        colour_bottom = if bottom_pixel.opacity < MAX_OPACITY
+        colour_bottom = if bottom_pixel.alpha > MAX_OPACITY
           get_normal_rgb bottom_pixel
         else
           options[:bg]
